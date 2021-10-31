@@ -45,7 +45,7 @@ class Bird_dataset(Dataset):
         image_path = self.images[item]
         image = Image.open(image_path)
         image = self.transform(image)
-        label = int(self.labels[image_path[16:]][0:3])-1
+        label = int(self.labels[image_path[-8:]][0:3])-1
         return image,label
     def __len__(self):
         return len(self.images)
@@ -173,7 +173,7 @@ if __name__ == '__main__':
             the_last_loss = val_loss
 
     #save model
-    torch.save(model, './model/effnet-b7.pth')
+    #torch.save(model, './model/effnet-b7.pth')
 
     # plot results
     fig = plt.figure(figsize=(18, 6))
