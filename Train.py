@@ -62,7 +62,7 @@ if __name__ == '__main__':
         transforms.RandomVerticalFlip(),  
         transforms.RandomRotation(45),
         transforms.RandomCrop(256),
-        transforms.ColorJitter(0.1,0.1,0),
+        #transforms.ColorJitter(0.1,0.1,0),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
 
