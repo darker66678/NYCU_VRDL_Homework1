@@ -1,7 +1,7 @@
 # NYCU_VRDL_Homework1
 This is a Homework in VRDL class at NYCU , building a classifier of bird photo with deep learning
 
-```requirements.txt```  need to install these library
+```requirements.txt```  need to install these librarys
 
 ```Train.py``` Training code 
 
