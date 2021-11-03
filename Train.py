@@ -67,7 +67,7 @@ if __name__ == '__main__':
     ])
 
     # setting
-    batch_size = 4
+    batch_size = 12
     epoch = 50
     num_train=3000
     num_classes=200
@@ -85,8 +85,7 @@ if __name__ == '__main__':
         dataset=val_set, batch_size=batch_size, shuffle=True)
 
     #model = models.resnet50(pretrained=True)
-    #model = torch.hub.load('pytorch/vision:v0.10.0','densenet201', pretrained=True)
-
+    #model = torch.hub.load('pytorch/vision:v0.10.0','densenet161', pretrained=True)
     # pretrained model setting
     model = EfficientNet.from_pretrained(
         'efficientnet-b7', advprop=True)
@@ -173,7 +172,7 @@ if __name__ == '__main__':
             the_last_loss = val_loss
 
     #save model
-    #torch.save(model, './model/effnet-b7.pth')
+    torch.save(model, './model/model.pth')
 
     # plot results
     fig = plt.figure(figsize=(18, 6))
