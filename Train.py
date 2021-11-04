@@ -15,6 +15,7 @@ import argparse
 if(torch.cuda.is_available()):
     print(torch.cuda.get_device_name(0))
 
+
 # define arg parser
 def get_parser():
     parser = argparse.ArgumentParser(description='my description')
@@ -41,12 +42,14 @@ class Bird_dataset(Dataset):
             self.labels[k] = v
         file.close()
         self.images = images_list_str
+
     def __getitem__(self, item):
         image_path = self.images[item]
         image = Image.open(image_path)
         image = self.transform(image)
         label = int(self.labels[image_path[-8:]][0:3])-1
-        return image,label
+        return image, label
+
     def __len__(self):
         return len(self.images)
 
@@ -56,24 +59,23 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # define data preprocess
     train_transforms = transforms.Compose([
-        transforms.Resize([400,400]),
+        transforms.Resize([400, 400]),
         transforms.ToTensor(),
-        transforms.RandomHorizontalFlip(),  
-        transforms.RandomVerticalFlip(),  
-        transforms.RandomRotation(45),
-        transforms.RandomCrop(256),
-        #transforms.ColorJitter(0.1,0.1,0),
+        transforms.RandomHorizontalFlip(),   
+        transforms.RandomVerticalFlip(),   
+        transforms.RandomRotation(45), 
+        transforms.RandomCrop(256), 
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
 
     # setting
     batch_size = 12
     epoch = 50
-    num_train=3000
-    num_classes=200
+    num_train = 3000
+    num_classes = 200
     initial_lr = 0.0002
     train_folder = args.folder
-    train_label=args.label
+    train_label = args.label
     # prepare train data and val data
     train_bird_dataset = Bird_dataset(
         train_folder, train_label, train_transforms)
@@ -84,8 +86,8 @@ if __name__ == '__main__':
     val_loader = Data.DataLoader(
         dataset=val_set, batch_size=batch_size, shuffle=True)
 
-    #model = models.resnet50(pretrained=True)
-    #model = torch.hub.load('pytorch/vision:v0.10.0','densenet161', pretrained=True)
+    '''model = models.resnet50(pretrained=True)
+    model = torch.hub.load('pytorch/vision:v0.10.0','densenet161', pretrained=True)'''
     # pretrained model setting
     model = EfficientNet.from_pretrained(
         'efficientnet-b7', advprop=True)
@@ -100,12 +102,10 @@ if __name__ == '__main__':
     '''optimizer = torch.optim.Adam(model.parameters(), lr=initial_lr)'''
 
     # define optimizer,learning rate scheduler,loss function
-    optimizer = torch.optim.AdamW(model.parameters(),  lr=initial_lr, betas=(0.9, 0.999),
-                    eps=1e-08, weight_decay=0.05, amsgrad=False)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=initial_lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0.05, amsgrad=False)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[15], gamma=0.1)
     loss_func = nn.CrossEntropyLoss()
-
-    #--------------------Training process----------------------------
+    '''--------------------Training process----------------------------'''
     loss_list = []
     acc_list = []
     val_loss_list = []
@@ -152,8 +152,6 @@ if __name__ == '__main__':
                 pred = torch.max(output, 1)[1]
                 test_correct = (pred == label).sum()
                 val_acc += test_correct.item()
-
-
         val_acc = float(val_acc / (0.05*num_train))
         val_loss = float(val_loss / (0.05*num_train))
         print("val Loss:%.9f" % val_loss)
@@ -170,11 +168,9 @@ if __name__ == '__main__':
             print('trigger times: 0')
             trigger_times = 0
             the_last_loss = val_loss
-
-    #save model
+    '''save model'''
     torch.save(model, './model/model.pth')
-
-    # plot results
+    '''plot results'''
     fig = plt.figure(figsize=(18, 6))
     fig.add_subplot(1, 2, 1)
     plt.plot(loss_list, label='Train_loss')

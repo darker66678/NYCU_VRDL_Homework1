@@ -9,7 +9,8 @@ from PIL import Image
 from torch.autograd import Variable
 import argparse
 if(torch.cuda.is_available()):
-    print(torch.cuda.get_device_name(0))    
+    print(torch.cuda.get_device_name(0))
+
 
 # define arg parser
 def get_parser():
@@ -24,19 +25,22 @@ def get_parser():
         '--model', default='C:\\Users\\abc46\\Desktop\\NYCU\\VRDL\\hw1\\model\\effnet-b7.0.0002_50_adamW_advprop.pth')
     return parser
 
+
 # define dataset
 class Bird_dataset(Dataset):
-    def __init__(self, root,folder, transform):
+    def __init__(self, root, folder, transform):
         self.transform = transform
         with open(root) as f:
             test_images = [x.strip() for x in f.readlines()]  # all the testing images
         self.images = test_images
-        self.folder=folder
+        self.folder = folder
+
     def __getitem__(self, item):
         image_path = self.folder+"\\"+self.images[item]
         image = Image.open(image_path)
         image = self.transform(image)
         return image
+
     def __len__(self):
         return len(self.images)
 
@@ -76,7 +80,7 @@ if __name__ == '__main__':
     # predicting
     model.eval()
     submission = []
-    num=0
+    num = 0
     with torch.no_grad():
         print("predicting......")
         for img in test_loader:  # image order is important to your result
@@ -86,11 +90,6 @@ if __name__ == '__main__':
             pred_ans = labels[int(pred)]
             submission.append([test_bird_dataset.images[num], pred_ans])
             num = num+1
-            
     # save result
     np.savetxt('answer.txt', submission, fmt='%s')
-
     print("predicting finish!")
-
-
-
